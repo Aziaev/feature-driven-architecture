@@ -1,4 +1,4 @@
-# React-Redux architecture for large applications. [DRAFT]
+# Artur Ziaev's React-Redux architecture for large applications. [DRAFT]
 
 A set of conventions and principles to make React-Redux application more maintainable. This example is a port of [redux real-world](https://github.com/reduxjs/redux/blob/master/examples/real-world/) example. It **will** appear as over-engineered, because this structure is designed for large applications.
 
@@ -30,15 +30,15 @@ We use Redux to its fullest while avoiding namespace collisions and implicitness
 
 ## Terminology
 
-- "components" - React components
-- "containers" - React component without rendering DOM elements or CSS, may use renderers
-- "renderers" - React component, equivalent to presentational components renders DOM elements
+- "Containers" - "Smart" React component witj connecting to Redux store. Without rendering DOM elements or CSS, may use renderers
+- "View" - A rendered entire page view wich created with composing of "Features" and "Components". Provides full functionality of app. Can have own state. 
+- "Feature" - Renders complex user-facing functionality, reusable between pages. Can have own state.
+- "Components" - "Dumb" React components. 
+- "renderers" - Stateless function which renders a React Components or DOM elements.
 - "store" - Redux store
 - "action creators" - Redux action creators
 - "action types" - Redux action types
 - "selectors" - Reselect selector functions
-- "feature" - Renders complex user-facing functionality, reusable between pages.
-- "page" - Composes entire document information out of features.
 
 ## Directory structure
 
@@ -67,6 +67,63 @@ src/
         ├── reducer
         └── index
 ```
+
+```
+APP DIRECTORY
+├──README.md
+├──node_modules
+├──package.json
+├──.gitignore
+├──.eslintrc
+├──public
+│  ├──favicon.ico
+│  ├──index.html
+│  └──manifest.json
+├──build
+└──src
+├──App.jsx
+├──index.js - entry point
+├──assets
+│  ├──css
+│  └──img
+├──components (for shared components)
+│  ├──[jsx files]
+│  └──__tests__
+├──helpers (for shared utility functions)
+│  ├──<function name>.types.js
+│  ├──(js files with functions)
+│  └──__tests__
+├──modules (page views)
+│  ├──<module name>
+│  │  ├──__tests__
+│  │  ├──<module name>.types.js
+│  │  ├──constants.js
+│  │  ├──constants.js
+│  │  ├──view.jsx (view component)
+│  │  ├──styled.jsx (styled components
+│  │  ├──[...<componentname>.jsx] (bunch of react stupid components)
+│  │  └──container.jsx (container for store connection
+│  └──index.js
+└──core (directory for redux utility code such as actions, reducers, sagas and async api functions)
+  ├──__tests__
+  ├──async
+  │  └──index.js
+  ├──actions
+  │  ├──[...<name>actions.js] (bunch of actions)
+  │  └──index.js
+  ├──constants
+  │  └──index.js
+  ├──reducers
+  │  └──[...<name>reducer.js] (bunch of reducers)
+  │  └──index.js
+  ├──sagas
+  │  ├──[...<name>saga.js] (bunch of reducers. Optional)
+  │  └──index.js
+  └──store
+  ├──store.types.js
+  └──index.js
+```
+
 
 ## Page (`src/pages/{page}/`)
 

@@ -30,8 +30,9 @@ We use Redux to its fullest while avoiding namespace collisions and implicitness
 
 ## Terminology
 
-- "Containers" - "Smart" React component witj connecting to Redux store. Without rendering DOM elements or CSS, may use renderers
-- "View" - A rendered entire page view wich created with composing of "Features" and "Components". Provides full functionality of app. Can have own state. 
+- "Container" - "Smart" React component with connecting to Redux store. Without rendering DOM elements or CSS, may use renderers
+- "View" - A rendered entire page view which created with composing of "Features" and "Components". Provides full functionality of app. Can have own state. 
+- "Module" - Компонент который реализует в себе законченную функциональность которая включает в себя контейнер, набор страниц, композицию feature, и т.д.
 - "Feature" - Renders complex user-facing functionality, reusable between pages. Can have own state.
 - "Components" - "Dumb" React components. 
 - "renderers" - Stateless function which renders a React Components or DOM elements.
@@ -40,88 +41,70 @@ We use Redux to its fullest while avoiding namespace collisions and implicitness
 - "action types" - Redux action types
 - "selectors" - Reselect selector functions
 
-## Directory structure
+view > component > block > element
 
-```
-src/
-├── shared/
-|   ├── components/
-|   └── utils
-├── store/
-├── router/
-├── features/
-|   ├── {feature}/
-│   |   ├── containers/
-│   |   ├── actionCreators/
-│   |   ├── actionTypes/
-│   |   ├── renderers/
-│   |   ├── selectors/
-│   |   ├── reducer
-│   |   └── index
-└── pages/
-    └── {page}/
-        ├── containers/
-        ├── actionCreators/
-        ├── actionTypes/
-        ├── selectors/
-        ├── reducer
-        └── index
-```
+## App structure
 
 ```
 APP DIRECTORY
-├──README.md
 ├──node_modules
-├──package.json
-├──.gitignore
-├──.eslintrc
 ├──public
 │  ├──favicon.ico
 │  ├──index.html
 │  └──manifest.json
+│  
 ├──build
-└──src
-├──App.jsx
-├──index.js - entry point
-├──assets
-│  ├──css
-│  └──img
-├──components (for shared components)
-│  ├──[jsx files]
-│  └──__tests__
-├──helpers (for shared utility functions)
-│  ├──<function name>.types.js
-│  ├──(js files with functions)
-│  └──__tests__
-├──modules (page views)
-│  ├──<module name>
+├──src
+│  ├──assets
+│  │  ├──css
+│  │  └──img
+│  │
+│  ├──components - Directory for ommon reusable components
+│  │  └──<Component directory>
+│  │     ├──__tests__
+│  │     ├──<Component name>.css - CSS file for component (optional)
+│  │     ├──styled.js - Styled components file
+│  │     ├──[other jsx files]
+│  │     └──index.jsx - Default export by component name
+│  │     
+│  ├──helpers - Directory or shared utility functions
 │  │  ├──__tests__
-│  │  ├──<module name>.types.js
-│  │  ├──constants.js
-│  │  ├──constants.js
-│  │  ├──view.jsx (view component)
-│  │  ├──styled.jsx (styled components
-│  │  ├──[...<componentname>.jsx] (bunch of react stupid components)
-│  │  └──container.jsx (container for store connection
-│  └──index.js
-└──core (directory for redux utility code such as actions, reducers, sagas and async api functions)
-  ├──__tests__
-  ├──async
-  │  └──index.js
-  ├──actions
-  │  ├──[...<name>actions.js] (bunch of actions)
-  │  └──index.js
-  ├──constants
-  │  └──index.js
-  ├──reducers
-  │  └──[...<name>reducer.js] (bunch of reducers)
-  │  └──index.js
-  ├──sagas
-  │  ├──[...<name>saga.js] (bunch of reducers. Optional)
-  │  └──index.js
-  └──store
-  ├──store.types.js
-  └──index.js
+│  │  ├──<file name>.types.js - Optional file for flow types
+│  │  └──<file name>.js - JS files with helper functions
+│  │
+│  ├──modules (page views)
+│  │  └──<module name>
+│  │     ├──__tests__
+│  │     ├──core - Directory for files needed to Redux Store and sideffects
+│  │     │  ├──actions.js - Actions
+│  │     │  ├──initialState.js - Initial state for particular module
+│  │     │  ├──reducer - Reducer for particular module
+│  │     │  └──sagas - Sagas for particular module
+│  │     │  
+│  │     ├──types.js
+│  │     ├──constants.js
+│  │     ├──view.jsx - View component
+│  │     ├──styled.js - Styled components file
+│  │     ├──[...<componentname>.jsx] - Other react stupid components
+│  │     └──index.jsx - Entry point and container with connection to store
+│  │  
+│  ├──core - Directory for redux utility code such as actions, reducers, sagas and async api functions
+│  │  ├──__tests__
+│  │  ├──constants.js - For common constants
+│  │  ├──async.js - Async utility functions are here
+│  │  ├──initialState.js - Initial states of all modules are imported here
+│  │  ├──rootReducer.js - Reducers of all modules are imported here
+│  │  ├──rootSaga.js - Sagas of all modules are imported here
+│  │  ├──utils.js - Utility functions
+│  │  └──store.js - Redux store file
+│  │
+│  └──index.js - Entry point
+│
+├──README.md
+├──.flowconfig
+├──.gitignore
+├──.eslintrc
+└──package.json
 ```
 
 

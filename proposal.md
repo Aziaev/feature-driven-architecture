@@ -1,6 +1,7 @@
 # React-Redux architecture for W's large applications. [DRAFT]
 
-A set of conventions and principles to make React-Redux application more maintainable. This example is a port of [redux real-world](https://github.com/reduxjs/redux/blob/master/examples/real-world/) example. It **will** appear as over-engineered, because this structure is designed for large applications.
+A set of conventions and principles to make React-Redux application more maintainable. This example is a port of [feature-driven-architecture](https://github.com/technology-ebay-de/feature-driven-architecture) convention. 
+It **will** appear as over-engineered, because this structure is designed for large applications.
 
 If you think some of those are not a good fit for your application, feel free to fork and adapt for your use cases.
 
@@ -57,9 +58,11 @@ APP DIRECTORY
 ├──src
 │  ├──assets
 │  │  ├──css
+│  │  ├──fonts
+│  │  ├──icons
 │  │  └──img
 │  │
-│  ├──components - Directory for ommon reusable components
+│  ├──components - Directory for common reusable components
 │  │  └──<Component directory>
 │  │     ├──__tests__
 │  │     ├──<Component name>.css - CSS file for component (optional)

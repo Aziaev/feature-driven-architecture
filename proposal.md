@@ -1,6 +1,6 @@
-# React-Redux architecture for W's large applications. [DRAFT]
+# React-Redux-Saga architecture for large applications. [DRAFT]
 
-A set of conventions and principles to make React-Redux application more maintainable. This example is a port of [feature-driven-architecture](https://github.com/technology-ebay-de/feature-driven-architecture) convention. 
+A set of conventions and principles to make React-Redux application more maintainable. This example is a fork of [feature-driven-architecture](https://github.com/technology-ebay-de/feature-driven-architecture) convention. 
 It **will** appear as over-engineered, because this structure is designed for large applications.
 
 If you think some of those are not a good fit for your application, feel free to fork and adapt for your use cases.
@@ -18,15 +18,15 @@ Global state brings 2 further challenges:
 
 React has no opinions on how to structure an application since components are universal. We need a structure that enforces high cohesion principle by keeping code implementing same feature in the same directory.
 
-Another unsolved problem when every component can use every component is - all components become highly interconnected at some point. To avoid this, we introduce 2 complex types: "feature" and "page". Also, we keep shared "components" clearly separated.
+Another unsolved problem when every component can use every component is - all components become highly interconnected at some point. To avoid this, we introduce 2 complex types: `module`, `container` and `view`. Also, we keep shared "components" clearly separated.
 
 ## Solution
 
 We use Redux to its fullest while avoiding namespace collisions and implicitness as much as possible by defining a set of conventions and principles, without introducing additional abstractions.
 
 1.  We introduce highly cohesive features structure.
-1.  We introduce new complex types: "feature" and "page".
-1.  We introduce `features` and `pages` namespaces to the state.
+1.  We introduce new complex types: `module`, `container` and `view`
+1.  We introduce `module` ??????????????and `pages` namespaces to the state.
 1.  We introduce scoped action types.
 
 ## Terminology

@@ -1,9 +1,9 @@
-# React-Redux-Saga architecture for large applications. [DRAFT]
+# React-Redux architecture for large applications. [DRAFT]
 
 A set of conventions and principles to make React-Redux application more maintainable. This example is a fork of [feature-driven-architecture](https://github.com/technology-ebay-de/feature-driven-architecture) convention. 
 It **will** appear as over-engineered, because this structure is designed for large applications.
 
-If you think some of those are not a good fit for your application, feel free to fork and adapt for your use cases.
+If you think some of those are not a good fit for your application, feel free to contact: [aziaev@gmail.com](aziaev@gmail.com)
 
 ## Motivation
 
@@ -24,6 +24,12 @@ Another unsolved problem when every component can use every component is - all c
 
 We use Redux to its fullest while avoiding namespace collisions and implicitness as much as possible by defining a set of conventions and principles, without introducing additional abstractions.
 
+We introduce app components structure:
+- `module` 
+    - `container` 
+        - `view` or `views`
+            - `components` or/and `isolated components` or/and `shared components` or/and `dumb components`
+
 1.  We introduce highly cohesive features structure.
 1.  We introduce new complex types: `module`, `container` and `view`
 1.  We introduce `module` ??????????????and `pages` namespaces to the state.
@@ -31,18 +37,18 @@ We use Redux to its fullest while avoiding namespace collisions and implicitness
 
 ## Terminology
 
+- "Module" - Компонент который реализует в себе законченную функциональность которая включает в себя контейнер, набор страниц, композицию feature, и т.д.
 - "Container" - "Smart" React component with connecting to Redux store. Without rendering DOM elements or CSS, may use renderers
 - "View" - A rendered entire page view which created with composing of "Features" and "Components". Provides full functionality of app. Can have own state. 
-- "Module" - Компонент который реализует в себе законченную функциональность которая включает в себя контейнер, набор страниц, композицию feature, и т.д.
 - "Feature" - Renders complex user-facing functionality, reusable between pages. Can have own state.
 - "Components" - "Dumb" React components. 
+- "Isolated Components" - "Dumb" React components. 
 - "renderers" - Stateless function which renders a React Components or DOM elements.
 - "store" - Redux store
 - "action creators" - Redux action creators
 - "action types" - Redux action types
 - "selectors" - Reselect selector functions
-
-view > component > block > element
+- "Assets" - CSS/images/fonts
 
 ## App structure
 
@@ -70,7 +76,7 @@ APP DIRECTORY
 │  │     ├──[other jsx files]
 │  │     └──index.jsx - Default export by component name
 │  │     
-│  ├──helpers - Directory or shared utility functions
+│  ├──helpers/utils - Directory or shared utility functions
 │  │  ├──__tests__
 │  │  ├──<file name>.types.js - Optional file for flow types
 │  │  └──<file name>.js - JS files with helper functions
@@ -115,27 +121,22 @@ APP DIRECTORY
 
 Every page renders contents of the entire document. It is designed to use features and connect them. It acts as an interoperability layer between the features. A change on one page should never break a different page.
 
-#### Must not
-
-- A page must not import from other pages.
-- A page must not access features state `state.features.{feature}`.
-
-#### Must
-
-- A page must export a component.
-- A page must export a route for the router.
-- A page must use the following naming schema for the action types `page/{page}/{action}`.
-
-#### May
-
-- A page may export a reducer.
-- A page may connect to the store.
-- A page may access the global `state`.
-- A page may access the page state `state.pages.{page}`.
-- A page may render any feature.
-- A page may render feature A inside of feature B by passing a render prop or component.
-- A page may exchange data between features.
-- A page may provide data to a feature if a feature can't fetch it by itself.
+> ###### Must not
+> - A page must not import from other pages.
+> - A page must not access features state `state.features.{feature}`.
+> ###### Must
+> - A page must export a component.
+> - A page must export a route for the router.
+> - A page must use the following naming schema for the action types `page/{page}/{action}`.
+> ###### May
+> - A page may export a reducer.
+> - A page may connect to the store.
+> - A page may access the global `state`.
+> - A page may access the page state `state.pages.{page}`.
+> - A page may render any feature.
+> - A page may render feature A inside of feature B by passing a render prop or component.
+> - A page may exchange data between features.
+> - A page may provide data to a feature if a feature can't fetch it by itself.
 
 ## Feature (`src/features/{feature}/`)
 
@@ -156,72 +157,121 @@ A feature is a self-contained, renderable, user-facing functionality, that is en
 - Always use one subtree in the global state: `state.features.{feature}`. Never access anything else from state directly.
 - Accept props from the page if there is external data that a feature doesn't have.
 
-#### Must not
-
-- A feature must not import from other features.
-- A feature must not import from pages.
-- A feature must not access any other state than `state.features.{feature}`.
-
-#### Must
-
-- A feature must export a component.
-- A feature must use the following naming schema for the action types `feature/{feature}/{action}`.
-
-#### May
-
-- A feature may export a reducer.
-- A feature may connect to the store.
-- A feature may export a subroute for the router.
-- A feature may access the feature state `state.features.{feature}`.
-- A feature component may accept props.
-- A feature may access shared resources.
-- A feature may fetch data from an API.
+> ###### Must not
+> - A feature must not import from other features.
+> - A feature must not import from pages.
+> - A feature must not access any other state than `state.features.{feature}`.
+> ###### Must
+> - A feature must export a component.
+> - A feature must use the following naming schema for the action types `feature/{feature}/{action}`.
+> ###### May
+> - A feature may export a reducer.
+> - A feature may connect to the store.
+> - A feature may export a subroute for the router.
+> - A feature may access the feature state `state.features.{feature}`.
+> - A feature component may accept props.
+> - A feature may access shared resources.
+> - A feature may fetch data from an API.
 
 ## Shared components (`src/shared/components/`)
 
 Every directory corresponds to one or to a set of components shared between the features or pages.
 
-#### Must not
+> ###### Must not
+> - Must not connect directly to the store, router or any other global system.
+> ###### Must
+> - If directory contains one component, its name must start upper case.
+> - If directory contains multiple components, its name must start lower case.
+> ###### May
+> - May be containers or presentational components.
 
-- Must not connect directly to the store, router or any other global system.
+## Application state structure
+React приложение может использовать для сохранения состояния и данных 3 инструмента:
+- Redux store
+- Component state
+- Context
+Необязательно использовать все 3 инструмента сразу. Возможны различные комбинации.
 
-#### Must
+### Redux store (`src/store/`)
+Redux store используется для хранения данных которые используются в разных модулях и доступ к ним необходим из разных частей приложения. Также Redux используется для работы библиотеки Redux-form
 
-- If directory contains one component, its name must start upper case.
-- If directory contains multiple components, its name must start lower case.
+We use a single store for the entire application. 
 
-#### May
-
-- May be containers or presentational components.
-
-## Store (`src/store/`)
-
-We use a single store for the entire application. Here you may:
-
+You can:
 - Setup the store.
 - Combine all reducers.
 - Apply middleware.
 
-#### State shape
+> ###### May
+> - Подключать к Redux store модули с использованием контейнеров
+> ###### Not recommended
+> - Подключать к Redux store компоненты
+
+##### State shape
 
 ```json
 {
-  "pages": {
-    "pageA": {},
-    "pageB": {}
+  "modules": {
+    "moduleA": {
+      "viewA": {},
+      "viewB": {}
+    },
+    "moduleB": {
+      "viewA": {},
+      "viewB": {}
+    }
   },
-  "features": {
-    "featureA": {},
-    "featureB": {}
+  "components": {
+    "componentA": {},
+    "componentB": {}
   }
 }
 ```
 
-## Router (`src/router/`)
+### Component state
+State компонента используется в модулях которые используют данные только внутри самого компонента. Используется состояние компонента-контейнера и данные прокидываются в дочерние функциональные компоненты.
 
+### Context
+Context используется для размещения данных которые используются во всех модулях или компонентах. Данные в контекст попадают при инициализации приложения. Инициализация приложения производится при монтировании корневого компонента `App`
+
+> ###### Must not
+> - Сохранять прочие данные
+> ###### May
+> - Хранить данные пользователя (права, перс.данные, роли)
+> - Хранить ссылки на API
+
+## Router (`src/routes/`)
 Provides a router component that uses routes from pages.
 
+## Async
+
 ## Containers and renderers
+
+## Unit tests
+
+### JS functions, utils, helpers
+Необходимо покрывать тестами все JS функции, утилиты.
+
+> ###### Must
+> - покрытие не менее 90%
+
+### React components
+Необходимо покрывать тестами все умные и глупые компоненты. Так как приложение использует принцип композиции компонентов и компоненты состоят из множества компонентов, то необходимо использовать `shallow` рендеринг. В `глупых` компонентах необходимо все условия, и то что дочерние компоненты рендерятся с получают необходимые `props`.
+В `умных` компонентах необходимо проверить условия в которых меняется состояние компонента. 
+Также необходимо убедиться что полученные функции вызываются с необходимыми параметрами.
+
+> ###### Must
+> - покрытие не менее 90%
+
+### Reducers
+
+> ###### Must
+> - покрытие не менее 90%
+
+### Selectors
+
+> ###### Must
+> - покрытие не менее 90%
 
 ## Todo
 
@@ -242,7 +292,28 @@ Provides a router component that uses routes from pages.
 - Use reselect.
 - Use state based router?
 - Make it work on codesandbox
-- Flow/TypeScript?
+
 - Graphql?
 - forms
 - Workspace for features with yarn? (npm has plans to implement this)
+
+##### Flow/TypeScript
+flow naming convention: 
+    - naming for component props
+    - naming for component state
+    - naming for stateless components props
+    - naming for function props
+    - naming for arguments
+    - naming for generic types
+flow typings files location
+
+##### Async
+Async API interaction tutorial:
+    - Redux Saga. When and how
+    - Async/await
+##### Service layer description
+    - Redux state
+
+##### Принцип разделения и переиспользования
+В приложении компоненты должны делиться по типам и функциям:
+- Умные компоненты: те компоненты которые хранят состояние, взаимодействуют с API, 
